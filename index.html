@@ -1878,15 +1878,15 @@ deck.addEventListener('touchstart', e=>{
   swX = e.touches[0].clientX; swY = e.touches[0].clientY;
 }, {passive:true});
 deck.addEventListener('touchend', e=>{
-  if(touching){ touching = false; holdUntil = performance.now() + 1200; }
+  if(touching){ touching = false; holdUntil = performance.now() + 300; }
   const t = e.changedTouches[0];
   const dx = t.clientX - swX, dy = t.clientY - swY;
   if(Math.abs(dx) > 60 && Math.abs(dx) > Math.abs(dy) * 2){
     dx > 0 ? show(cur + 1) : show(cur - 1);   // RTL: swipe right = next
   }
 }, {passive:true});
-deck.addEventListener('touchcancel', ()=>{ touching = false; holdUntil = performance.now() + 1200; }, {passive:true});
-deck.addEventListener('wheel', e=>{ if(e.target.closest('.lyrics')) holdUntil = performance.now() + 800; }, {passive:true});
+deck.addEventListener('touchcancel', ()=>{ touching = false; holdUntil = performance.now() + 300; }, {passive:true});
+deck.addEventListener('wheel', e=>{ if(e.target.closest('.lyrics')) holdUntil = performance.now() + 400; }, {passive:true});
 function curLyrics(){
   const el = slides[cur] && slides[cur].querySelector('.lyrics');
   return (el && el.dataset.empty !== '1') ? el : null;
@@ -1911,8 +1911,9 @@ function stepScroll(ts){
   const el = curLyrics();
   if(!el || !scrolling){ stopScroll(); return; }
   if(touching || ts < holdUntil){
-    // the finger (or its fling) owns the scroll — follow it, resume from wherever it lands
-    pos = el.scrollTop;
+    // the finger (or its fling) owns the scroll — follow it, resume from wherever it lands;
+    // while it's still gliding, keep extending the hold so resume happens ~300ms after it settles
+    if(Math.abs(el.scrollTop - pos) > 1){ pos = el.scrollTop; holdUntil = ts + 300; }
     lastTs = ts;
     rafId = requestAnimationFrame(stepScroll);
     return;
