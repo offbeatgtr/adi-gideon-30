@@ -1,5 +1,5 @@
 <!doctype html>
-<html lang="he" dir="rtl">
+<html lang="he" dir="rtl" class="light">
 <head>
 <title>עדי וגדעון — 30 שנות אהבה</title>
 <meta charset="utf-8">
@@ -217,7 +217,7 @@
 </head>
 <body>
 
-<script>document.documentElement.classList.add('js');</script>
+<script>document.documentElement.classList.add('js','light');</script>
 <canvas id="stars"></canvas>
 <div class="vignette"></div>
 
@@ -1983,7 +1983,10 @@ function applyMode(light){
   try{ localStorage.setItem('mode', light ? 'light' : 'dark'); }catch(e){}
 }
 modeBtn.addEventListener('click', ()=>applyMode(!document.documentElement.classList.contains('light')));
-try{ if(localStorage.getItem('mode') === 'light') applyMode(true); }catch(e){}
+// ponytail: light is the default; dark only if explicitly chosen before
+let savedMode = null;
+try{ savedMode = localStorage.getItem('mode'); }catch(e){}
+applyMode(savedMode !== 'dark');
 modeBtn.addEventListener('click', ()=>{ if(window.redrawDust) window.redrawDust(); });
 
 /* עדינות של אבק זהב ברקע */
