@@ -1,0 +1,570 @@
+<!doctype html>
+<html lang="he" dir="rtl" class="light">
+<head>
+<title>שרק תחייך</title>
+<meta charset="utf-8">
+<meta name="robots" content="noindex, nofollow">
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Frank+Ruhl+Libre:wght@300;400;500;700;900&family=Heebo:wght@300;400;500&display=swap">
+<style>
+  :root{
+    --night:#171126;
+    --night2:#221A38;
+    --ink:#F3EBDC;
+    --gold:#DDBA76;
+    --gold-soft:#B99A5E;
+    --meta:#9C92B8;
+    --grad-hi:#F7F0E2;
+    --grad-lo:#DDBA76;
+    --vig:rgba(10,7,18,.65);
+    --serif:'Frank Ruhl Libre', 'David Libre', Georgia, serif;
+    --sans:'Heebo', 'Arial Hebrew', Arial, sans-serif;
+  }
+  :root.light{
+    --night:#F7F2E7;
+    --night2:#EFE7D6;
+    --ink:#2B2140;
+    --gold:#9C762A;
+    --gold-soft:#B99A5E;
+    --meta:#6E6585;
+    --grad-hi:#3A2D5C;
+    --grad-lo:#9C762A;
+    --vig:rgba(122,100,64,.16);
+  }
+  *{box-sizing:border-box;margin:0;padding:0}
+  html,body{height:100%}
+  body{
+    background:var(--night);
+    color:var(--ink);
+    font-family:var(--serif);
+    direction:rtl;
+    overflow:hidden;
+    -webkit-font-smoothing:antialiased;
+    transition:background .5s ease, color .5s ease;
+  }
+  #stars{position:fixed;top:0;left:0;right:0;bottom:0;z-index:0;pointer-events:none;opacity:.7}
+  .vignette{position:fixed;top:0;left:0;right:0;bottom:0;z-index:1;pointer-events:none;
+    background:radial-gradient(ellipse 120% 90% at 50% 40%, transparent 55%, var(--vig) 100%)}
+
+  .slide{
+    position:fixed;top:0;left:0;right:0;bottom:0;z-index:2;
+    display:flex;flex-direction:column;align-items:center;justify-content:center;
+    padding:4.5vh 6vw;
+    opacity:0;visibility:hidden;transform:translateY(14px);
+    transition:opacity .7s ease, transform .7s ease, visibility .7s;
+  }
+  .slide.active{opacity:1;visibility:visible;transform:none}
+  @media (prefers-reduced-motion: reduce){
+    .slide{transition:opacity .2s;transform:none}
+  }
+
+  .eyebrow{
+    font-family:var(--sans);font-weight:400;font-size:clamp(13px,1.5vh,20px);
+    letter-spacing:.35em;color:var(--gold);text-align:center;
+  }
+  .rule{display:flex;align-items:center;justify-content:center;gap:14px;margin:2.2vh 0}
+  .rule::before,.rule::after{content:'';height:1px;width:min(14vw,140px);
+    background:linear-gradient(90deg,transparent,var(--gold-soft));}
+  .rule::after{background:linear-gradient(90deg,var(--gold-soft),transparent)}
+  .rule svg{flex:none}
+
+  /* ---- cover ---- */
+  .cover .names{
+    font-weight:900;font-size:clamp(44px,11vh,120px);line-height:1.15;
+    text-align:center;text-wrap:balance;
+    background:linear-gradient(180deg,var(--grad-hi),var(--grad-lo));
+    -webkit-background-clip:text;background-clip:text;color:transparent;
+  }
+  .cover .sub{
+    font-weight:300;font-size:clamp(20px,3.4vh,40px);color:var(--ink);
+    letter-spacing:.06em;text-align:center;margin-top:1.2vh;
+  }
+  .cover .hint{
+    position:absolute;bottom:4vh;font-family:var(--sans);font-weight:300;
+    font-size:clamp(12px,1.6vh,17px);color:var(--meta);letter-spacing:.08em;
+  }
+
+  /* ---- index ---- */
+  .index h2{font-weight:700;font-size:clamp(24px,4vh,44px);margin-bottom:2.5vh;color:var(--gold)}
+  .toc{
+    columns:2;column-gap:5vw;width:min(88vw,1400px);
+    font-family:var(--sans);font-weight:300;font-size:clamp(13px,2.05vh,24px);
+    line-height:1.75;
+  }
+  .toc a{color:var(--ink);text-decoration:none;display:flex;gap:.6em;break-inside:avoid;cursor:pointer}
+  .toc a:hover,.toc a:focus-visible{color:var(--gold);outline:none}
+  .toc .n{color:var(--gold-soft);min-width:1.6em;text-align:left;font-variant-numeric:tabular-nums}
+
+  /* ---- song ---- */
+  .song{justify-content:flex-start}
+  .song header{text-align:center;flex:none;width:100%}
+  .song .num{
+    font-family:var(--sans);font-weight:300;font-size:clamp(12px,1.5vh,17px);
+    color:var(--meta);letter-spacing:.3em;font-variant-numeric:tabular-nums;
+  }
+  .song h2{
+    font-weight:700;font-size:clamp(30px,5.2vh,64px);line-height:1.2;
+    text-wrap:balance;margin-top:.6vh;color:var(--ink);
+  }
+  .song .artist{
+    font-weight:300;font-size:clamp(16px,2.4vh,28px);color:var(--gold);
+    margin-top:.4vh;letter-spacing:.04em;
+  }
+  .lyrics{
+    flex:1 1 auto;min-height:0;width:min(86vw,1500px);
+    margin-top:1vh;overflow:hidden;
+    touch-action:pan-y;overscroll-behavior:contain;-webkit-overflow-scrolling:touch;
+    font-weight:400;font-size:26px;line-height:1.62;
+    text-align:center;white-space:pre-line;
+  }
+  .lyrics.flexcols{display:flex;gap:3.5vw;white-space:normal;text-align:right}
+  .lyrics.flexcols .col{flex:1;min-width:0;white-space:pre-line}
+  .lyrics .placeholder{
+    display:flex;height:100%;align-items:center;justify-content:center;text-align:center;
+  }
+  .lyrics .placeholder span{
+    font-family:var(--sans);font-weight:300;color:var(--meta);
+    font-size:clamp(15px,2.2vh,22px);line-height:1.9;
+    border:1px solid rgba(185,154,94,.35);
+    border:1px solid color-mix(in srgb, var(--gold) 30%, transparent);border-radius:2px;
+    padding:3vh 4vw;white-space:normal;
+  }
+  .modeBtn{
+    position:fixed;top:2.2vh;left:3vw;z-index:4;cursor:pointer;border:none;background:none;
+    color:var(--meta);font-family:var(--sans);font-weight:300;
+    font-size:clamp(11px,1.5vh,15px);letter-spacing:.12em;
+    opacity:.65;transition:opacity .3s, color .2s;
+  }
+  .modeBtn:hover,.modeBtn:focus-visible{opacity:1;color:var(--gold);outline:none}
+  .ctrls{
+    position:fixed;left:1vw;top:50%;transform:translateY(-50%);z-index:4;
+    display:flex;flex-direction:column;gap:7px;align-items:center;
+    opacity:0;visibility:hidden;transition:opacity .5s, visibility .5s;
+  }
+  .ctrls.show{opacity:1;visibility:visible}
+  .ctrls button{
+    cursor:pointer;background:none;touch-action:manipulation;
+    border:1px solid rgba(185,154,94,.4);
+    border:1px solid color-mix(in srgb, var(--gold) 35%, transparent);border-radius:2px;
+    color:var(--meta);font-family:var(--sans);font-weight:400;
+    font-size:clamp(13px,1.8vh,17px);width:46px;height:40px;padding:0;
+    display:flex;align-items:center;justify-content:center;
+    transition:color .2s, border-color .2s, opacity .2s;
+  }
+  .ctrls button:hover,.ctrls button:focus-visible{color:var(--gold);border-color:var(--gold);outline:none}
+  .ctrls button:disabled{opacity:.35;cursor:default;color:var(--meta);border-color:rgba(185,154,94,.4);border-color:color-mix(in srgb, var(--gold) 35%, transparent)}
+  .ctrls .ro{
+    font-family:var(--sans);font-weight:300;font-size:11px;color:var(--meta);
+    direction:ltr;font-variant-numeric:tabular-nums;letter-spacing:.04em;
+  }
+  .ctrls .sep{width:28px;height:1px;background:rgba(185,154,94,.35);background:color-mix(in srgb, var(--gold) 30%, transparent);margin:5px 0}
+  .lyrics::-webkit-scrollbar{width:4px}
+  .lyrics::-webkit-scrollbar-thumb{background:rgba(185,154,94,.4);background:color-mix(in srgb, var(--gold) 35%, transparent);border-radius:2px}
+  .slide{touch-action:manipulation}
+
+  /* ---- outro ---- */
+  .outro .big{
+    font-weight:900;font-size:clamp(36px,8vh,96px);text-align:center;text-wrap:balance;
+    background:linear-gradient(180deg,var(--grad-hi),var(--grad-lo));
+    -webkit-background-clip:text;background-clip:text;color:transparent;
+  }
+  .outro .small{font-weight:300;font-size:clamp(18px,3vh,34px);text-align:center;margin-top:2vh;color:var(--ink)}
+
+  /* ---- chrome ---- */
+  .progress{
+    position:fixed;bottom:0;right:0;height:3px;z-index:3;
+    background:linear-gradient(90deg,var(--gold-soft),var(--gold));
+    transition:width .5s ease;width:0;
+  }
+  .counter{
+    position:fixed;bottom:2.2vh;left:3vw;z-index:3;font-family:var(--sans);
+    font-weight:300;font-size:clamp(11px,1.5vh,15px);color:var(--meta);
+    font-variant-numeric:tabular-nums;letter-spacing:.12em;
+    direction:ltr;opacity:0;transition:opacity .5s;
+  }
+  .counter.show{opacity:1}
+  .homeBtn{
+    position:fixed;bottom:2vh;right:3vw;z-index:3;cursor:pointer;border:none;background:none;
+    color:var(--meta);font-family:var(--sans);font-weight:300;
+    font-size:clamp(11px,1.5vh,15px);letter-spacing:.12em;
+    opacity:0;transition:opacity .5s, color .2s;
+  }
+  .homeBtn.show{opacity:1}
+  .homeBtn:hover,.homeBtn:focus-visible{color:var(--gold);outline:none}
+  .cover .qr{position:absolute;bottom:3.5vh;left:3vw;display:flex;flex-direction:column;align-items:center;gap:8px}
+  .cover .qr .box{background:#fff;padding:8px;border-radius:4px;width:clamp(84px,12vh,120px);height:clamp(84px,12vh,120px)}
+  .cover .qr .box svg{display:block;width:100%;height:100%}
+  .cover .qr span{font-family:var(--sans);font-weight:300;font-size:clamp(10px,1.4vh,13px);color:var(--meta);letter-spacing:.05em}
+  /* ללא JavaScript (תצוגה מקדימה בטלפון): מסמך רגיל שנגלל, כל השירים גלויים */
+  :root:not(.js) body{overflow:auto}
+  :root:not(.js) .slide{position:relative;opacity:1;visibility:visible;transform:none;height:auto;min-height:100vh}
+  :root:not(.js) .lyrics{overflow:visible;flex:none;min-height:auto}
+  :root:not(.js) #stars,:root:not(.js) .vignette,:root:not(.js) .modeBtn,:root:not(.js) .progress{display:none}
+  @media (max-width:700px){
+    .ctrls{
+      left:50%;right:auto;top:auto;bottom:calc(1.2vh + env(safe-area-inset-bottom));
+      transform:translateX(-50%);flex-direction:row;gap:8px;
+    }
+    .ctrls .sep{width:1px;height:26px;margin:0 3px}
+    .ctrls button{width:42px;height:38px}
+    .lyrics{width:92vw;margin-bottom:calc(44px + env(safe-area-inset-bottom))}
+    .homeBtn{bottom:auto;top:2.2vh;right:3vw}
+    .counter{left:auto;right:3vw;bottom:auto;top:5.8vh}
+    .modeBtn{left:3vw;right:auto}
+  }
+</style>
+</head>
+<body>
+
+<script>document.documentElement.classList.add('js','light');</script>
+<canvas id="stars"></canvas>
+<div class="vignette"></div>
+
+<div class="progress" id="progress"></div>
+<div class="counter" id="counter"></div>
+<button class="homeBtn" id="homeBtn">לתוכן העניינים</button>
+<button class="modeBtn" id="modeBtn">תצוגה בהירה</button>
+<div class="ctrls" id="ctrls">
+  <button id="fPlus" title="הגדלת גופן" aria-label="הגדלת גופן">א+</button>
+  <div class="ro" id="fontRO">100%</div>
+  <button id="fMinus" title="הקטנת גופן" aria-label="הקטנת גופן">א−</button>
+  <div class="sep"></div>
+  <button id="scrollBtn" title="גלילה אוטומטית" aria-label="גלילה אוטומטית">
+    <svg id="icPlay" width="12" height="14" viewBox="0 0 10 12" aria-hidden="true"><path d="M10 1v10L1 6z" fill="currentColor"/></svg>
+    <svg id="icPause" width="12" height="14" viewBox="0 0 10 12" aria-hidden="true" style="display:none"><path d="M1 1h3v10H1zM6 1h3v10H6z" fill="currentColor"/></svg>
+  </button>
+  <button id="spUp" title="גלילה מהירה יותר" aria-label="גלילה מהירה יותר">
+    <svg width="14" height="9" viewBox="0 0 14 9" aria-hidden="true"><path d="M1 8l6-6 6 6" fill="none" stroke="currentColor" stroke-width="1.6"/></svg>
+  </button>
+  <div class="ro" id="spRO">&times;1.0</div>
+  <button id="spDown" title="גלילה איטית יותר" aria-label="גלילה איטית יותר">
+    <svg width="14" height="9" viewBox="0 0 14 9" aria-hidden="true"><path d="M1 1l6 6 6-6" fill="none" stroke="currentColor" stroke-width="1.6"/></svg>
+  </button>
+</div>
+
+<div id="deck">
+  <section class="slide song">
+    <header>
+      <div class="num">הקדשה לגדעון</div>
+      <h2>שרק תחייך</h2>
+      <div class="artist">יובל דיין</div>
+      <div class="rule"><svg width="120" height="26" viewBox="0 0 120 26" aria-hidden="true">
+  <g style="fill:none;stroke:var(--gold);stroke-width:1">
+    <circle cx="52" cy="13" r="9"></circle><circle cx="68" cy="13" r="9"></circle>
+  </g>
+  <path d="M0 13h34M86 13h34" style="stroke:var(--gold-soft);stroke-width:1" opacity=".6"></path>
+</svg></div>
+    </header>
+    <div class="lyrics" data-i="0" data-empty="0">אני יודעת שיש מלאכים בעולם
+מחכים לי בדרך
+לא צריך למהר הכל יסתדר
+זה יבוא עם הזמן
+
+יש דברים חשובים באמת
+זה בסוף בפרטים הקטנים
+לפעמים לא צריך לדבר
+גם בשקט מצאנו מילים
+
+שרק תחייך כל החיים
+זה כל מה שאני מבקשת
+בית קטן, גינה לילדים
+תאמין אני מאושרת
+תדע שאני לתמיד עלינו שומרת
+
+ואתה עוד תראה הדברים מעצמם
+יתחברו עם הדרך
+הפחדים יפחדו שאלות יפתרו
+זה יבוא עם הזמן
+
+יש דברים חשובים באמת
+זה בסוף בפרטים הקטנים
+לפעמים לא צריך לדבר
+גם בשקט מצאנו מילים
+
+שרק תחייך כל החיים
+זה כל מה שאני מבקשת
+בית קטן, גינה לילדים
+תאמין אני מאושרת
+תדע שאני לתמיד עלינו שומרת
+
+שרק תחייך כל החיים
+זה כל מה שאני מבקשת
+בית קטן, גינה לילדים
+תאמין אני מאושרת
+שרק תחייך כל החיים
+זה כל מה שאני מבקשת
+בית קטן, גינה לילדים
+תאמין אני מאושרת
+תדע שאני לתמיד עלינו שומרת</div>
+  </section></div>
+
+<script>
+const deck = document.getElementById('deck');
+
+const slides = [...document.querySelectorAll('.slide')];
+const SONG_COUNT = document.querySelectorAll('.slide.song').length;
+const progress = document.getElementById('progress');
+const counter = document.getElementById('counter');
+const homeBtn = document.getElementById('homeBtn');
+let cur = 0;
+
+function fitLyrics(slide){
+  const el = slide.querySelector('.lyrics');
+  if(!el || el.dataset.empty === '1') return;
+  if(!el._raw) el._raw = el.textContent.trim();
+  const text = el._raw;
+  const min = 14;
+  const base = Math.max(min, Math.round(window.innerHeight * 0.042));
+
+  // build explicit column blocks, splitting at stanza boundaries so verses stay whole
+  function build(cols){
+    if(cols === 1){
+      el.classList.remove('flexcols');
+      el.textContent = text;
+      return [el];
+    }
+    const stanzas = text.split(/\n{2,}/);
+    const weight = s => s.split('\n').length + 1;
+    let groups;
+    if(stanzas.length >= cols){
+      const per = stanzas.reduce((a,s)=>a+weight(s),0) / cols;
+      groups = Array.from({length:cols},()=>[]);
+      let gi = 0, acc = 0;
+      for(const s of stanzas){
+        if(gi < cols-1 && acc > 0 && acc + weight(s)/2 > per){ gi++; acc = 0; }
+        groups[gi].push(s); acc += weight(s);
+      }
+      groups = groups.map(g=>g.join('\n\n')).filter(g=>g.trim());
+    }else{
+      const lines = text.split('\n');
+      const per = Math.ceil(lines.length / cols);
+      groups = Array.from({length:cols},(_,k)=>lines.slice(k*per,(k+1)*per).join('\n')).filter(g=>g.trim());
+    }
+    el.classList.add('flexcols');
+    el.textContent = '';
+    return groups.map(g=>{
+      const d = document.createElement('div');
+      d.className = 'col'; d.textContent = g;
+      el.appendChild(d); return d;
+    });
+  }
+
+  let best = {size: 0, cols: 1};
+  for(const cols of [1,2,3]){
+    const parts = build(cols);
+    const over = () => parts.some(p => p.scrollHeight > p.clientHeight + 2);
+    let size = base;
+    el.style.fontSize = size + 'px';
+    while(over() && size > min){ el.style.fontSize = (--size) + 'px'; }
+    if(!over() && size > best.size) best = {size, cols};
+    if(best.size >= base) break;
+  }
+  // ponytail: base display size = 2x the fitted size, so 100% reads big (teleprompter default)
+  const target = Math.max(12, Math.round((best.size || min) * 2 * fontFactor));
+  let parts = build(best.cols);
+  el.style.fontSize = target + 'px';
+  const clipped = () => parts.some(p => p.scrollHeight > p.clientHeight + 2);
+  if(clipped()){
+    // user-enlarged font (or tiny window): one centered column that scrolls
+    parts = build(1);
+    el.style.fontSize = target + 'px';
+    el.style.overflowY = 'auto';
+  }else{
+    el.style.overflowY = 'hidden';
+  }
+  el.scrollTop = 0;
+}
+
+/* גודל גופן */
+let fontFactor = 1, speedFactor = 1;
+try{
+  fontFactor = parseFloat(localStorage.getItem('fontFactor2')) || 1;
+  speedFactor = parseFloat(localStorage.getItem('speedFactor')) || 1;
+}catch(e){}
+const fontRO = document.getElementById('fontRO'), spRO = document.getElementById('spRO');
+function updateROs(){
+  fontRO.textContent = Math.round(fontFactor * 100) + '%';
+  spRO.textContent = '×' + speedFactor.toFixed(1);
+}
+function bumpFont(d){
+  // keep the reader's place: anchor by fraction of content scrolled, survive the refit
+  const el = curLyrics();
+  const wasScrolling = scrolling;
+  const frac = (el && el.scrollHeight > el.clientHeight + 2) ? el.scrollTop / el.scrollHeight : 0;
+  fontFactor = Math.min(3.5, Math.max(0.5, +(fontFactor + d).toFixed(2)));
+  try{ localStorage.setItem('fontFactor2', fontFactor); }catch(e){}
+  fitLyrics(slides[cur]);
+  const el2 = curLyrics();
+  const scrollable = el2 && el2.scrollHeight > el2.clientHeight + 2;
+  if(scrollable && frac > 0){
+    el2.scrollTop = frac * el2.scrollHeight;
+    pos = el2.scrollTop;
+  }
+  if(wasScrolling && !scrollable) stopScroll();
+  else if(wasScrolling) pos = el2.scrollTop;
+  updateScrollBtn(); updateROs();
+}
+function bumpSpeed(d){
+  speedFactor = Math.min(3, Math.max(0.4, +(speedFactor + d).toFixed(1)));
+  try{ localStorage.setItem('speedFactor', speedFactor); }catch(e){}
+  updateROs();
+}
+
+/* גלילה אוטומטית */
+const scrollBtn = document.getElementById('scrollBtn');
+const icPlay = document.getElementById('icPlay'), icPause = document.getElementById('icPause');
+let scrolling = false, rafId = null, lastTs = 0, pos = 0;
+let touching = false, holdUntil = 0;
+let swX = 0, swY = 0;
+deck.addEventListener('touchstart', e=>{
+  if(e.target.closest('.lyrics')) touching = true;
+  swX = e.touches[0].clientX; swY = e.touches[0].clientY;
+}, {passive:true});
+deck.addEventListener('touchend', e=>{
+  if(touching){ touching = false; holdUntil = performance.now() + 300; }
+  const t = e.changedTouches[0];
+  const dx = t.clientX - swX, dy = t.clientY - swY;
+  if(Math.abs(dx) > 60 && Math.abs(dx) > Math.abs(dy) * 2){
+    dx > 0 ? show(cur + 1) : show(cur - 1);   // RTL: swipe right = next
+  }
+}, {passive:true});
+deck.addEventListener('touchcancel', ()=>{ touching = false; holdUntil = performance.now() + 300; }, {passive:true});
+deck.addEventListener('wheel', e=>{ if(e.target.closest('.lyrics')) holdUntil = performance.now() + 400; }, {passive:true});
+function curLyrics(){
+  const el = slides[cur] && slides[cur].querySelector('.lyrics');
+  return (el && el.dataset.empty !== '1') ? el : null;
+}
+function setScrollUI(on){
+  icPlay.style.display = on ? 'none' : '';
+  icPause.style.display = on ? '' : 'none';
+  scrollBtn.title = on ? 'עצירת גלילה' : 'גלילה אוטומטית';
+}
+function stopScroll(){
+  scrolling = false; setScrollUI(false);
+  if(rafId) cancelAnimationFrame(rafId); rafId = null;
+}
+function startScroll(){
+  const el = curLyrics();
+  if(!el || el.scrollHeight <= el.clientHeight + 2) return;
+  scrolling = true; setScrollUI(true);
+  lastTs = 0; pos = el.scrollTop;
+  rafId = requestAnimationFrame(stepScroll);
+}
+function stepScroll(ts){
+  const el = curLyrics();
+  if(!el || !scrolling){ stopScroll(); return; }
+  if(touching || ts < holdUntil){
+    // the finger (or its fling) owns the scroll — follow it, resume from wherever it lands;
+    // while it's still gliding, keep extending the hold so resume happens ~300ms after it settles
+    if(Math.abs(el.scrollTop - pos) > 1){ pos = el.scrollTop; holdUntil = ts + 300; }
+    lastTs = ts;
+    rafId = requestAnimationFrame(stepScroll);
+    return;
+  }
+  if(lastTs){
+    if(Math.abs(el.scrollTop - pos) > 40) pos = el.scrollTop; // external jump — resync
+    const speed = (parseFloat(el.style.fontSize) || 24) * 0.45 * speedFactor;
+    pos += speed * (ts - lastTs) / 1000;
+    el.scrollTop = pos;
+    if(el.scrollTop >= el.scrollHeight - el.clientHeight - 1){ stopScroll(); return; }
+  }
+  lastTs = ts;
+  rafId = requestAnimationFrame(stepScroll);
+}
+function updateScrollBtn(){
+  const el = curLyrics();
+  scrollBtn.disabled = !el || el.scrollHeight <= el.clientHeight + 2;
+}
+scrollBtn.addEventListener('click', ()=> scrolling ? stopScroll() : startScroll());
+document.getElementById('fPlus').addEventListener('click', ()=>bumpFont(0.1));
+document.getElementById('fMinus').addEventListener('click', ()=>bumpFont(-0.1));
+document.getElementById('spUp').addEventListener('click', ()=>bumpSpeed(0.2));
+document.getElementById('spDown').addEventListener('click', ()=>bumpSpeed(-0.2));
+updateROs();
+
+function show(i){
+  stopScroll();
+  cur = Math.max(0, Math.min(slides.length - 1, i));
+  slides.forEach((s,j)=>s.classList.toggle('active', j === cur));
+  fitLyrics(slides[cur]);
+  progress.style.width = slides.length > 1 ? (cur / (slides.length - 1) * 100) + '%' : '0';
+  const onSong = slides[cur].classList.contains('song');
+  counter.textContent = '';
+  counter.classList.toggle('show', onSong);
+  homeBtn.classList.toggle('show', cur > 1);
+  document.getElementById('ctrls').classList.toggle('show', onSong);
+  updateScrollBtn();
+}
+
+addEventListener('keydown', e=>{
+  if(['ArrowLeft','ArrowDown','PageDown',' ','Enter'].includes(e.key)){ e.preventDefault(); show(cur+1); }
+  else if(['ArrowRight','ArrowUp','PageUp'].includes(e.key)){ e.preventDefault(); show(cur-1); }
+  else if(e.key === 'Home'){ show(0); }
+  else if(e.key === '+' || e.key === '='){ bumpFont(0.1); }
+  else if(e.key === '-' || e.key === '_'){ bumpFont(-0.1); }
+});
+deck.addEventListener('click', e=>{
+  const a = e.target.closest('[data-goto]');
+  if(a){ show(Number(a.dataset.goto)); return; }
+  if(e.target.closest('.lyrics') || e.target.closest('button') || e.target.closest('a')) return;
+  const x = e.clientX / innerWidth;
+  if(x <= 0.25) show(cur + 1);        // RTL: left edge = next
+  else if(x >= 0.75) show(cur - 1);
+});
+homeBtn.addEventListener('click', ()=>show(1));
+addEventListener('resize', ()=>fitLyrics(slides[cur]));
+if(document.fonts && document.fonts.ready)
+  document.fonts.ready.then(()=>fitLyrics(slides[cur]));
+
+/* מצב תצוגה: כהה / בהיר */
+const modeBtn = document.getElementById('modeBtn');
+let dustRGB = '221,186,118';
+function applyMode(light){
+  document.documentElement.classList.toggle('light', light);
+  modeBtn.textContent = light ? 'תצוגה כהה' : 'תצוגה בהירה';
+  dustRGB = light ? '140,105,40' : '221,186,118';
+  try{ localStorage.setItem('mode', light ? 'light' : 'dark'); }catch(e){}
+}
+modeBtn.addEventListener('click', ()=>applyMode(!document.documentElement.classList.contains('light')));
+// ponytail: light is the default; dark only if explicitly chosen before
+let savedMode = null;
+try{ savedMode = localStorage.getItem('mode'); }catch(e){}
+applyMode(savedMode !== 'dark');
+modeBtn.addEventListener('click', ()=>{ if(window.redrawDust) window.redrawDust(); });
+
+/* עדינות של אבק זהב ברקע */
+const cv = document.getElementById('stars'), ctx = cv.getContext('2d');
+let parts = [];
+function seed(){
+  cv.width = innerWidth; cv.height = innerHeight;
+  parts = Array.from({length: 70}, (_,i)=>({
+    x: (i * 137.5) % cv.width,
+    y: (i * 89.7) % cv.height,
+    r: .6 + (i % 5) * .35,
+    s: .06 + (i % 7) * .03,
+    p: i * .9,
+  }));
+}
+seed(); addEventListener('resize', seed);
+const still = matchMedia('(prefers-reduced-motion: reduce)').matches;
+function tick(t){
+  ctx.clearRect(0,0,cv.width,cv.height);
+  for(const p of parts){
+    const a = .12 + .18 * (0.5 + 0.5 * Math.sin(t/1800 + p.p));
+    ctx.beginPath();
+    ctx.arc(p.x, p.y, p.r, 0, 7);
+    ctx.fillStyle = `rgba(${dustRGB},${a})`;
+    ctx.fill();
+    if(!still){ p.y -= p.s; if(p.y < -4) p.y = cv.height + 4; }
+  }
+  if(!still) requestAnimationFrame(tick);
+}
+window.redrawDust = ()=>{ if(still) tick(900); };
+still ? tick(900) : requestAnimationFrame(tick);
+
+show(0);
+</script>
+
+</body>
+</html>
